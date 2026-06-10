@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KI-Ready — dani-knows-ai</title>
+<style>
+  /* ===== Swiss Minimal — dani-knows-ai CI ===== */
+  :root{
+    --bg:#FFFFFF; --bg2:#F5F5F3; --ink:#1A1A1A; --ink2:#6B6B6B;
+    --line:#E0E0E0; --accent:#2B6CB0; --accent-tint:rgba(43,108,176,.08);
+    --maxw:760px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:"Helvetica Neue",Helvetica,Inter,Arial,sans-serif;
+    font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:48px 24px 96px}
+  h1{font-size:38px;line-height:1.15;font-weight:700;margin:0 0 18px;letter-spacing:-.01em}
+  h2{font-size:25px;line-height:1.2;font-weight:700;margin:0 0 6px;letter-spacing:-.01em}
+  h3{font-size:19px;font-weight:700;margin:0 0 6px}
+  p{margin:0 0 16px}
+  .lead{font-size:19px;color:var(--ink2)}
+  .label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--accent)}
+  .muted{color:var(--ink2)}
+  a{color:var(--accent);text-decoration:none}
+  .brand{font-weight:700;font-size:15px;color:var(--accent);letter-spacing:.01em;margin-bottom:6px}
+  .rule{height:2px;background:var(--accent);width:100%;margin:0 0 34px}
+  /* buttons */
+  button{font-family:inherit;font-size:16px;cursor:pointer}
+  .btn{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;
+    border:none;padding:14px 26px;font-weight:700;border-radius:3px}
+  .btn:disabled{background:var(--line);color:var(--ink2);cursor:not-allowed}
+  .btn-ghost{background:none;border:1px solid var(--line);color:var(--ink);padding:13px 22px;
+    font-weight:600;border-radius:3px}
+  .nav{display:flex;justify-content:space-between;align-items:center;margin-top:40px;gap:16px}
+  /* cards */
+  .card{background:var(--bg2);border-radius:3px;padding:26px 28px;margin:0 0 16px}
+  .card.q{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;flex-wrap:wrap}
+  .qtext{flex:1 1 280px;font-weight:700;font-size:18px;line-height:1.35}
+  .qno{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);margin-bottom:8px}
+  /* scale */
+  .scale{display:flex;gap:8px;flex:0 0 auto}
+  .scale button{width:46px;height:46px;border:1px solid var(--line);background:#fff;border-radius:3px;
+    font-weight:600;color:var(--ink2);transition:none}
+  .scale button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .scalehint{display:flex;justify-content:space-between;font-size:12px;color:var(--ink2);margin:4px 2px 0;max-width:286px}
+  /* stepper / progress */
+  .top{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+  .steps{display:flex;gap:8px}
+  .dot{width:30px;height:30px;border-radius:50%;background:var(--bg2);color:var(--ink2);
+    display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+  .dot.cur{background:var(--accent);color:#fff}
+  .dot.done{background:var(--ink);color:#fff}
+  .prog{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);text-align:right}
+  .prog b{display:block;font-size:22px;color:var(--ink)}
+  /* forms */
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--accent);margin-bottom:7px}
+  .field input,.field select{width:100%;padding:13px 14px;font-size:16px;font-family:inherit;
+    border:1px solid var(--line);border-radius:3px;background:#fff;color:var(--ink)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .opt{font-size:13px;color:var(--ink2);font-weight:400;text-transform:none;letter-spacing:0}
+  .consent{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--ink2);margin:6px 0 22px}
+  .consent input{margin-top:3px}
+  /* result */
+  .hero-score{display:flex;gap:32px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .bigband{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.09em;color:var(--accent)}
+  .bignum{font-size:64px;font-weight:700;line-height:1;letter-spacing:-.02em}
+  .bignum span{font-size:26px;color:var(--ink2)}
+  .dimrow{border-top:1px solid var(--line);padding:20px 0}
+  .dimrow:last-of-type{border-bottom:1px solid var(--line)}
+  .dimhead{display:flex;justify-content:space-between;align-items:baseline;gap:16px;margin-bottom:4px}
+  .dimscore{font-weight:700;white-space:nowrap}
+  .dimband{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+  .bar{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin:10px 0 12px}
+  .bar > i{display:block;height:100%;background:var(--accent)}
+  .flag{border-left:3px solid var(--accent);background:var(--accent-tint);padding:18px 22px;margin:24px 0;border-radius:0 3px 3px 0}
+  .flag .label{margin-bottom:6px}
+  .cta{background:var(--ink);color:#fff;border-radius:3px;padding:30px 30px;margin-top:34px}
+  .cta h3{color:#fff}
+  .cta p{color:#d8d8d8}
+  .cta a.btn{margin-top:6px}
+  .foot{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .hidden{display:none}
+  .checklist{list-style:none;padding:0;margin:10px 0 0}
+  .checklist li{padding:6px 0 6px 26px;position:relative;color:var(--ink2);font-size:15px}
+  .checklist li::before{content:"";position:absolute;left:0;top:11px;width:10px;height:10px;background:var(--accent);border-radius:2px}
+  @media(max-width:560px){
+    h1{font-size:30px}.bignum{font-size:48px}.grid2{grid-template-columns:1fr}
+    .scale button{width:42px;height:42px}
+  }
+  /* print = the PDF report */
+  @media print{
+    .noprint{display:none!important}
+    .wrap{max-width:100%;padding:0}
+    .cta{background:#fff;color:var(--ink);border:1px solid var(--line)}
+    .cta h3,.cta p{color:var(--ink)}
+    body{font-size:12pt}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">dani-knows-ai</div>
+  <div class="rule"></div>
+  <div id="app"></div>
+  <div class="foot noprint">
+    <span>KI-Ready · dani-knows-ai · Bern</span>
+    <span>Ihre Angaben bleiben bei uns und werden nicht für KI-Training verwendet.</span>
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   KI-READY — Konfiguration
+   Jahres-Update: einfach Texte unten anpassen, Datei speichern, fertig.
+   REGISTER: "Sie" (Website-CI) oder "du" — eine Variable.
+   ========================================================================= */
+const REGISTER = "Sie"; // "Sie" oder "du"
+
+const CLAIM = (REGISTER==="Sie")
+  ? "Denken, schreiben, produzieren — wo KI Ihrem Betrieb heute schon Zeit spart. Und wo Sie gerade welche verschenken."
+  : "Denken, schreiben, produzieren — wo KI deinem Betrieb heute schon Zeit spart. Und wo du gerade welche verschenkst.";
+
+const DIMENSIONS = [
+  {
+    key:"chefsache", name:"Chefsache statt Strategiepapier",
+    intro:"Treibt die Führung es — oder dümpelt es? Und wissen Sie, wo es bei Ihnen zählt?",
+    questions:[
+      "KI ist bei uns Chefsache — die Geschäftsleitung nutzt sie selbst, nicht nur die «jungen Wilden».",
+      "Wir wissen konkret, in welchen unserer Aufgaben KI uns am meisten Zeit spart.",
+      "KI-Nutzung ist bei uns ein bewusster Entscheid, nicht der Zufall Einzelner.",
+      "Wir haben ein Bild davon, wie unsere Arbeit in ein bis zwei Jahren mit KI aussehen soll.",
+      "Wir reden über KI nicht nur als Risiko, sondern als Chance für unseren Betrieb."
+    ],
+    spiegel:{
+      low:"KI passiert bei Ihnen nebenher, wenn überhaupt. Solange es nicht Chefsache ist, bleibt es Hobby Einzelner — und versickert. Erster Schritt ist ein Entscheid, kein Konzept.",
+      mid:"Sie haben erkannt, dass KI zählt. Jetzt fehlt die Richtung: Wo bringt sie Ihnen konkret am meisten? Ohne diese Antwort streuen Sie Aufwand.",
+      high:"Die Führung lebt es vor. Das ist der Hebel, den die meisten KMU nie ziehen. Halten — und auf Ihre schwächste Dimension richten."
+    }
+  },
+  {
+    key:"ordnung", name:"Ordnung statt Pipelines",
+    intro:"Sind Ihre Infos auffindbar und nutzbar — oder steckt alles in Köpfen und verstreuten Ordnern?",
+    questions:[
+      "Unser Wissen ist auffindbar — es steckt nicht nur in einzelnen Köpfen oder Mailpostfächern.",
+      "Wichtige Dokumente, Vorlagen und Infos sind zentral abgelegt und für alle nutzbar.",
+      "Wiederkehrende Texte (Angebote, Mails, Briefings) haben wir als Vorlagen oder Bausteine.",
+      "Unsere Daten sind so geordnet, dass eine KI sinnvoll darauf aufsetzen könnte.",
+      "Wir verlieren kaum Zeit mit «wo war das nochmal»."
+    ],
+    spiegel:{
+      low:"Ihr Wissen steckt in Köpfen und Postfächern. Jede KI ist nur so gut wie das, worauf sie zugreift — bei Ihnen zur Zeit nichts Geordnetes. Hier liegt das stille Zeitleck Nummer eins.",
+      mid:"Vieles ist abgelegt, aber nicht so, dass eine KI (oder ein neuer Mitarbeiter) sich zurechtfindet. Vorlagen und ein zentraler Ort bringen sofort Tempo.",
+      high:"Ihre Ordnung ist ein Asset. Genau darauf lässt sich KI sauber aufsetzen — die meisten müssen das erst nachholen."
+    }
+  },
+  {
+    key:"mut", name:"Mut statt Angst",
+    intro:"Traut sich Ihr Team ran — oder herrscht heimliches Verbot? Lernen Sie?",
+    questions:[
+      "Unsere Mitarbeitenden trauen sich, KI-Tools auszuprobieren — ohne Angst, etwas falsch zu machen.",
+      "Bei uns gibt es kein heimliches Verbot — KI-Nutzung ist offen besprochen und erlaubt.",
+      "Wer einen guten KI-Kniff findet, teilt ihn im Team.",
+      "Fehlversuche mit KI gelten bei uns als Lernen, nicht als Blamage.",
+      "Unsere Leute verstehen, was KI kann und was nicht — und haben keine diffuse Angst davor."
+    ],
+    spiegel:{
+      low:"Bei Ihnen traut sich kaum jemand ran, oder es gibt ein stilles Verbot. Das ist die teuerste Bremse überhaupt — Tools kann man kaufen, Mut nicht. Hier zahlt sich Reden mehr aus als Technik.",
+      mid:"Einzelne probieren, aber es bleibt privat. Sobald Sie Kniffe offen teilen, multipliziert sich jeder Fund im Team.",
+      high:"Ihre Kultur trägt. Das ist seltener und wertvoller als jedes Tool — Kultur schlägt Technik."
+    }
+  },
+  {
+    key:"alltag", name:"Im Alltag statt im Pilotprojekt",
+    intro:"Läuft KI an echten, wiederkehrenden Aufgaben — oder ist es Spielerei nach Feierabend?",
+    questions:[
+      "Wir setzen KI an echten, wiederkehrenden Aufgaben ein — nicht nur zum Experimentieren.",
+      "Wir produzieren Inhalte (Texte, Social Posts, Newsletter) schon teilweise mit KI, statt alles von Hand oder teuer extern.",
+      "Für Bild- oder Videomaterial nutzen wir KI, statt jedes Mal Stockfotos zu kaufen oder extern zu beauftragen.",
+      "Für wiederkehrende Aufgaben haben wir feste KI-Abläufe (Prompts, Vorlagen), die jede/r nutzen kann.",
+      "KI hat bei uns mindestens einen Arbeitsschritt spürbar schneller gemacht."
+    ],
+    spiegel:{
+      low:"KI ist bei Ihnen Spielerei nach Feierabend, nicht Werkzeug. Besonders bei Inhalten — Text, Bild, Video — kaufen Sie vermutlich noch teuer ein, was heute auf Knopfdruck ginge. Ihr sichtbarster Hebel.",
+      mid:"Sie nutzen KI punktuell. Der Sprung kommt, wenn Sie feste Abläufe bauen, die jede/r nutzt — statt dass jeder das Rad neu prompted.",
+      high:"KI arbeitet bei Ihnen mit, nicht nebenher. Wenn Sie sogar Bild und Video selbst produzieren, sind Sie weiter als die meisten Agentur-Kunden."
+    }
+  },
+  {
+    key:"verantwortung", name:"Verantwortung statt Wildwuchs",
+    intro:"Weiss jeder, welche Daten reindürfen? Ist es DSG-konform? Prüft jemand die Ergebnisse?",
+    questions:[
+      "Bei uns weiss jede/r, welche Daten in KI-Tools dürfen — und welche nicht.",
+      "Unsere KI-Nutzung ist datenschutzkonform (DSG/DSGVO) — Kundendaten landen nicht unkontrolliert in fremden Tools.",
+      "Wir prüfen KI-Ergebnisse, bevor sie zu Kunden oder in wichtige Entscheide gehen.",
+      "Wir haben eine einfache Regel oder Richtlinie für den Umgang mit KI (muss keine 20 Seiten sein).",
+      "Wenn ein KI-Tool ausfällt oder Unsinn liefert, wissen wir, was dann zu tun ist."
+    ],
+    spiegel:{
+      low:"Niemand weiss genau, welche Daten reindürfen. Das ist kein Papierkram-Problem, das ist ein Risiko mit Rechnung. Eine halbe A4-Seite Regeln nimmt 90 % davon.",
+      mid:"Sie sind sich der Risiken bewusst, aber es ist nicht festgehalten. Eine einfache Richtlinie plus ein Prüfschritt reichen für ein KMU völlig.",
+      high:"Sie nutzen KI verantwortungsvoll, ohne sich in Bürokratie zu verheddern. Genau die Balance, die das DSG verlangt."
+    }
+  }
+];
+
+const BANDS = [
+  {min:1.0,max:1.99,name:"Am Start",msg:"Hier verschenken Sie gerade am meisten Zeit."},
+  {min:2.0,max:2.99,name:"In Bewegung",msg:"Erste Schritte sind da, das Meiste liegt noch brach."},
+  {min:3.0,max:3.99,name:"Auf Kurs",msg:"Solides Fundament — jetzt geht es um Hebel, nicht ums Aufholen."},
+  {min:4.0,max:5.0,name:"Vorne dabei",msg:"Sie nutzen, was viele noch verschlafen."}
+];
+
+// schwächste Dimension -> passender nächster Schritt (kein Verkaufsdruck)
+const CTA_MAP = {
+  chefsache:{ angebot:"KICKSTART oder ein KI-Kompass-Coaching für die Führung",
+    text:"Ein klarer Entscheid und eine Richtung — wo KI bei Ihnen den grössten Hebel hat." },
+  ordnung:{ angebot:"KICKSTART",
+    text:"Struktur schaffen, auf der KI sinnvoll aufsetzen kann — ohne IT-Grossprojekt." },
+  mut:{ angebot:"ein Hands-on-Workshop oder Gruppen-Coaching",
+    text:"Dem Team die Angst nehmen und eine Experimentierkultur anstossen." },
+  alltag:{ angebot:"BOOST oder ein Hands-on-Workshop",
+    text:"KI in feste Abläufe bringen — besonders bei Inhalten: Text, Bild, Video." },
+  verantwortung:{ angebot:"ein punktuelles Assessment (LIGHTHOUSE)",
+    text:"Eine schlanke KI-Richtlinie und ein Prüfschritt — DSG-konform, ohne Bürokratie." }
+};
+
+const KONTAKT_URL = "https://www.dani-knows-ai.com/kontakt";
+
+const BRANCHEN = ["Handel (Einzel- und Grosshandel)","Dienstleistung","Industrie / Produktion","Bau / Handwerk","Gesundheit / Soziales","Treuhand / Beratung","IT / Technologie","Medien / Kreativ","Bildung","Andere"];
+const GROESSEN = ["1–10 Mitarbeitende","11–50 Mitarbeitende","51–250 Mitarbeitende","über 250 Mitarbeitende"];
+
+/* ================= State ================= */
+const state = { firm:{name:"",branche:"",groesse:""}, answers:{}, lead:{}, dim:0 };
+const app = document.getElementById("app");
+const Q = (n)=> (REGISTER==="Sie") ? n : n; // questions sind "wir"-Aussagen, registerneutral
+
+function bandFor(score){ return BANDS.find(b=> score>=b.min && score<=b.max) || BANDS[0]; }
+function dimScore(i){ const a=DIMENSIONS[i].questions.map((_,qi)=>state.answers[i+"-"+qi]).filter(v=>v);
+  return a.length? a.reduce((x,y)=>x+y,0)/a.length : 0; }
+function dimComplete(i){ return DIMENSIONS[i].questions.every((_,qi)=>state.answers[i+"-"+qi]); }
+function overall(){ const s=DIMENSIONS.map((_,i)=>dimScore(i)); return s.reduce((x,y)=>x+y,0)/s.length; }
+
+/* ================= Screens ================= */
+function start(){
+  app.innerHTML = `
+    <span class="label">KI-Ready Check · 5 Minuten · kostenlos</span>
+    <h1 style="margin-top:14px">Wie KI-fit ist die Kopf- und Kreativarbeit in Ihrem Betrieb?</h1>
+    <p class="lead">${CLAIM}</p>
+    <ul class="checklist">
+      <li>25 ehrliche Fragen über 5 Dimensionen</li>
+      <li>Ein klares Ergebnis als Spiegel — kein Befund, der Sie blossstellt</li>
+      <li>Ihr grösster Zeit-Hebel, konkret benannt</li>
+      <li>Nützlich, auch wenn Sie nie mit mir arbeiten</li>
+    </ul>
+    <div class="nav"><span></span><button class="btn" onclick="firma()">Check starten →</button></div>`;
+  scrollTop();
+}
+
+function firma(){
+  app.innerHTML = `
+    <span class="label">Über Ihren Betrieb</span>
+    <h2 style="margin-top:12px">Damit die Auswertung zu Ihnen passt</h2>
+    <p class="muted">Drei Angaben — dann geht es los.</p>
+    <div class="field"><label>Firmenname <span class="opt">(optional)</span></label>
+      <input id="f-name" value="${esc(state.firm.name)}" placeholder="Ihr Betrieb"></div>
+    <div class="grid2">
+      <div class="field"><label>Branche</label>
+        <select id="f-branche">${BRANCHEN.map(b=>`<option ${state.firm.branche===b?"selected":""}>${b}</option>`).join("")}</select></div>
+      <div class="field"><label>Firmengrösse</label>
+        <select id="f-groesse">${GROESSEN.map(g=>`<option ${state.firm.groesse===g?"selected":""}>${g}</option>`).join("")}</select></div>
+    </div>
+    <div class="nav">
+      <button class="btn-ghost" onclick="start()">← zurück</button>
+      <button class="btn" onclick="saveFirma()">Weiter zu den Fragen →</button>
+    </div>`;
+  scrollTop();
+}
+function saveFirma(){
+  state.firm.name=val("f-name"); state.firm.branche=val("f-branche"); state.firm.groesse=val("f-groesse");
+  state.dim=0; dimension();
+}
+
+function dimension(){
+  const i=state.dim, d=DIMENSIONS[i];
+  const pct=Math.round((i)/DIMENSIONS.length*100);
+  app.innerHTML = `
+    <div class="top">
+      <div class="steps">${DIMENSIONS.map((_,k)=>`<div class="dot ${k<i?'done':k===i?'cur':''}">${k+1}</div>`).join("")}</div>
+      <div class="prog">Fortschritt<b>${pct}%</b></div>
+    </div>
+    <div class="card"><span class="label">Dimension ${i+1} von 5</span>
+      <h2 style="margin-top:8px">${d.name}</h2>
+      <p class="muted" style="margin:0">${d.intro} <span style="display:block;margin-top:6px;font-size:14px">Skala: 1 = gar nicht … 5 = vollständig.</span></p>
+    </div>
+    ${d.questions.map((q,qi)=>questionCard(i,qi,q)).join("")}
+    <div class="nav">
+      <button class="btn-ghost" onclick="prevDim()">← zurück</button>
+      <button class="btn" id="next" ${dimComplete(i)?"":"disabled"} onclick="nextDim()">
+        ${i<DIMENSIONS.length-1?"Weiter zur nächsten Dimension →":"Auswertung erstellen →"}</button>
+    </div>`;
+  scrollTop();
+}
+function questionCard(i,qi,q){
+  const cur=state.answers[i+"-"+qi];
+  const gno=i*5+qi+1;
+  return `<div class="card q">
+    <div class="qtext"><div class="qno">Frage ${gno}</div>${esc(q)}</div>
+    <div>
+      <div class="scale">${[1,2,3,4,5].map(n=>`<button class="${cur===n?'on':''}" onclick="answer(${i},${qi},${n})">${n}</button>`).join("")}</div>
+      <div class="scalehint"><span>gar nicht</span><span>vollständig</span></div>
+    </div>
+  </div>`;
+}
+function answer(i,qi,n){
+  state.answers[i+"-"+qi]=n;
+  // update scale buttons + next state without full re-render jump
+  const cards=document.querySelectorAll(".card.q");
+  const c=cards[qi]; if(c){ c.querySelectorAll(".scale button").forEach((b,bi)=>b.classList.toggle("on",bi+1===n)); }
+  const nx=document.getElementById("next"); if(nx) nx.disabled=!dimComplete(i);
+}
+function nextDim(){ if(!dimComplete(state.dim))return;
+  if(state.dim<DIMENSIONS.length-1){ state.dim++; dimension(); } else { lead(); } }
+function prevDim(){ if(state.dim>0){ state.dim--; dimension(); } else { firma(); } }
+
+function lead(){
+  app.innerHTML = `
+    <span class="label">Fast geschafft</span>
+    <h2 style="margin-top:12px">Ihr Ergebnis ist bereit</h2>
+    <p class="muted">Sie sehen es gleich direkt hier. Wenn Sie möchten, schicke ich Ihnen den ausführlichen Report mit Handlungsempfehlungen zusätzlich per Mail.</p>
+    <div class="grid2">
+      <div class="field"><label>Vorname</label><input id="l-vorname" value="${esc(state.lead.vorname||"")}" placeholder="Max"></div>
+      <div class="field"><label>Nachname</label><input id="l-nachname" value="${esc(state.lead.nachname||"")}" placeholder="Muster"></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>E-Mail</label><input id="l-mail" type="email" value="${esc(state.lead.mail||"")}" placeholder="max.muster@firma.ch"></div>
+      <div class="field"><label>Telefon <span class="opt">(optional)</span></label><input id="l-tel" value="${esc(state.lead.tel||"")}" placeholder="+41 79 …"></div>
+    </div>
+    <label class="consent"><input type="checkbox" id="l-ok">
+      <span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme genutzt werden. Keine Weitergabe an Dritte.</span></label>
+    <div class="nav">
+      <button class="btn-ghost" onclick="state.dim=${DIMENSIONS.length-1};dimension()">← zurück</button>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn-ghost" onclick="result(false)">Nur Ergebnis ansehen</button>
+        <button class="btn" onclick="result(true)">Report anfordern →</button>
+      </div>
+    </div>`;
+  scrollTop();
+}
+
+function result(withLead){
+  if(withLead){ state.lead={vorname:val("l-vorname"),nachname:val("l-nachname"),mail:val("l-mail"),tel:val("l-tel")}; }
+  const o=overall(), ob=bandFor(o);
+  const scores=DIMENSIONS.map((_,i)=>({i,s:dimScore(i)}));
+  const weak=[...scores].sort((a,b)=>a.s-b.s)[0];
+  const strong=[...scores].sort((a,b)=>b.s-a.s)[0];
+  const cta=CTA_MAP[DIMENSIONS[weak.i].key];
+  const heading = state.lead.vorname
+    ? esc(state.lead.vorname)+", so steht Ihr Betrieb"
+    : "So steht Ihr Betrieb";
+
+  app.innerHTML = `
+    <span class="label">Ihr KI-Ready Ergebnis${state.firm.name?" · "+esc(state.firm.name):""}</span>
+    <h1 style="margin-top:12px">${heading}</h1>
+    <div class="hero-score">
+      ${radar(scores)}
+      <div>
+        <div class="bigband">${ob.name}</div>
+        <div class="bignum">${o.toFixed(1)}<span> / 5</span></div>
+        <p class="muted" style="max-width:300px;margin-top:8px">${ob.msg}</p>
+      </div>
+    </div>
+
+    <div class="flag">
+      <div class="label">Ihr grösster Hebel</div>
+      <h3>${DIMENSIONS[weak.i].name}</h3>
+      <p style="margin:0">${spiegelText(weak.i)}</p>
+    </div>
+
+    <div class="flag" style="border-color:var(--ink);background:var(--bg2)">
+      <div class="label" style="color:var(--ink)">Ihre stärkste Seite</div>
+      <h3>${DIMENSIONS[strong.i].name}</h3>
+      <p style="margin:0">${spiegelText(strong.i)}</p>
+    </div>
+
+    <h2 style="margin:38px 0 6px">Alle fünf Dimensionen</h2>
+    ${scores.map(({i,s})=>dimRow(i,s)).join("")}
+
+    <div class="cta noprint">
+      <div class="label" style="color:#9ec3e8">Ihr naheliegender nächster Schritt</div>
+      <h3 style="margin-top:6px">${cta.text}</h3>
+      <p>Passend dazu: ${cta.angebot}. Unverbindlich, auf Augenhöhe — und mit jemandem, der KI selbst täglich im eigenen Betrieb nutzt.</p>
+      <a class="btn" style="background:#fff;color:var(--ink)" href="${KONTAKT_URL}" target="_blank" rel="noopener">Erstgespräch buchen →</a>
+    </div>
+
+    <div class="nav noprint">
+      <button class="btn-ghost" onclick="window.print()">Als PDF speichern / drucken</button>
+      <button class="btn-ghost" onclick="restart()">Check neu starten</button>
+    </div>`;
+  scrollTop();
+}
+
+function spiegelText(i){
+  const s=dimScore(i), sp=DIMENSIONS[i].spiegel;
+  if(s<2.0) return sp.low; if(s<4.0) return sp.mid; return sp.high;
+}
+function dimRow(i,s){
+  const b=bandFor(s), d=DIMENSIONS[i];
+  return `<div class="dimrow">
+    <div class="dimhead"><h3 style="margin:0">${d.name}</h3>
+      <span class="dimscore">${s.toFixed(1)} <span class="dimband">${b.name}</span></span></div>
+    <div class="bar"><i style="width:${(s/5*100).toFixed(0)}%"></i></div>
+    <p class="muted" style="margin:0;font-size:15px">${spiegelText(i)}</p>
+  </div>`;
+}
+
+/* ===== SVG-Radar (kein Library, eine portable Datei) ===== */
+function radar(scores){
+  const size=220, c=size/2, r=c-26, n=DIMENSIONS.length;
+  const ang=(k)=> (Math.PI*2*k/n) - Math.PI/2;
+  const pt=(k,rad)=> [c+Math.cos(ang(k))*rad, c+Math.sin(ang(k))*rad];
+  let grid="";
+  [1,2,3,4,5].forEach(lvl=>{
+    const pts=scores.map((_,k)=>pt(k, r*lvl/5).map(v=>v.toFixed(1)).join(",")).join(" ");
+    grid+=`<polygon points="${pts}" fill="none" stroke="#E0E0E0" stroke-width="1"/>`;
+  });
+  let axes="";
+  scores.forEach((_,k)=>{ const[x,y]=pt(k,r); axes+=`<line x1="${c}" y1="${c}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}" stroke="#E0E0E0" stroke-width="1"/>`; });
+  const poly=scores.map(({s},k)=>pt(k, r*Math.max(s,0.15)/5).map(v=>v.toFixed(1)).join(",")).join(" ");
+  let dots=scores.map(({s},k)=>{const[x,y]=pt(k,r*Math.max(s,0.15)/5);return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="3" fill="#2B6CB0"/>`;}).join("");
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" role="img" aria-label="Profil über fünf Dimensionen">
+    ${grid}${axes}
+    <polygon points="${poly}" fill="rgba(43,108,176,.14)" stroke="#2B6CB0" stroke-width="2"/>
+    ${dots}
+  </svg>`;
+}
+
+function restart(){ state.answers={}; state.dim=0; start(); }
+
+/* ===== helpers ===== */
+function val(id){ const e=document.getElementById(id); return e?e.value.trim():""; }
+function esc(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+function scrollTop(){ window.scrollTo({top:0,behavior:"instant"in document.body.style?"instant":"auto"}); }
+
+start();
+</script>
+</body>
+</html>
