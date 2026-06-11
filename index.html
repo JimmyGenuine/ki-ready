@@ -118,6 +118,7 @@
    REGISTER: "Sie" (Website-CI) oder "du" — eine Variable.
    ========================================================================= */
 const REGISTER = "Sie"; // "Sie" oder "du"
+const WEB3FORMS_KEY = "b6d02258-c04e-47f0-adb2-4832c88097f2"; // Lead-Versand -> hello@dani-knows-ai.com
 
 const CLAIM = (REGISTER==="Sie")
   ? "Denken, schreiben, produzieren — wo KI Ihrem Betrieb heute schon Zeit spart. Und wo Sie gerade welche verschenken."
@@ -340,11 +341,12 @@ function lead(){
     </div>
     <label class="consent"><input type="checkbox" id="l-ok">
       <span>Ich bin einverstanden, dass meine Angaben zur Kontaktaufnahme genutzt werden. Keine Weitergabe an Dritte.</span></label>
+    <div id="l-err" style="color:#c0392b;font-size:14px;margin:0 0 12px"></div>
     <div class="nav">
       <button class="btn-ghost" onclick="state.dim=${DIMENSIONS.length-1};dimension()">← zurück</button>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <button class="btn-ghost" onclick="result(false)">Nur Ergebnis ansehen</button>
-        <button class="btn" onclick="result(true)">Report anfordern →</button>
+        <button class="btn" onclick="requestReport()">Report anfordern →</button>
       </div>
     </div>`;
   scrollTop();
@@ -364,6 +366,7 @@ function result(withLead){
   app.innerHTML = `
     <span class="label">Ihr KI-Ready Ergebnis${state.firm.name?" · "+esc(state.firm.name):""}</span>
     <h1 style="margin-top:12px">${heading}</h1>
+    ${withLead ? `<div id="leadstatus" class="flag" style="border-color:var(--accent)"><div class="label">Report</div><p style="margin:0">Report wird angefordert …</p></div>` : ""}
     <div class="hero-score">
       ${radar(scores)}
       <div>
@@ -400,6 +403,59 @@ function result(withLead){
       <button class="btn-ghost" onclick="restart()">Check neu starten</button>
     </div>`;
   scrollTop();
+  if(withLead) submitLead(o,ob,scores);
+}
+
+function requestReport(){
+  const err=document.getElementById("l-err");
+  const mail=val("l-mail"), ok=document.getElementById("l-ok");
+  const re=/^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  if(!re.test(mail)){ if(err) err.textContent="Bitte eine gültige E-Mail-Adresse angeben."; return; }
+  if(ok && !ok.checked){ if(err) err.textContent="Bitte bestätigen Sie die Einwilligung."; return; }
+  result(true);
+}
+
+async function submitLead(o,ob,scores){
+  const box=document.getElementById("leadstatus");
+  const setMsg=(t)=>{ if(box){ const p=box.querySelector("p"); if(p) p.textContent=t; } };
+  if(!state.lead.mail){ setMsg("Für den Report fehlt Ihre E-Mail-Adresse."); return; }
+  const lines=[];
+  lines.push("KI-READY LEAD");
+  lines.push("Firma: "+(state.firm.name||"—"));
+  lines.push("Branche: "+state.firm.branche);
+  lines.push("Grösse: "+state.firm.groesse);
+  lines.push("Kontakt: "+(state.lead.vorname+" "+state.lead.nachname).trim()+" · "+state.lead.mail+(state.lead.tel?" · "+state.lead.tel:""));
+  lines.push("");
+  lines.push("Gesamt: "+o.toFixed(1)+" ("+ob.name+")");
+  scores.forEach(({i,s})=> lines.push("  D"+(i+1)+" "+DIMENSIONS[i].name+": "+s.toFixed(1)+" ("+bandFor(s).name+")"));
+  lines.push("");
+  lines.push("ANTWORTEN (1-5):");
+  DIMENSIONS.forEach((d,i)=>{
+    lines.push(d.name+":");
+    d.questions.forEach((q,qi)=> lines.push("  ["+(state.answers[i+"-"+qi]||"-")+"] F"+(i*5+qi+1)+": "+q));
+  });
+  const payload={
+    access_key:WEB3FORMS_KEY,
+    subject:"KI-Ready Lead: "+(state.firm.name||"Unbekannt")+" ("+o.toFixed(1)+")",
+    from_name:"KI-Ready Check",
+    name:(state.lead.vorname+" "+state.lead.nachname).trim(),
+    email:state.lead.mail,
+    telefon:state.lead.tel||"",
+    firma:state.firm.name||"",
+    branche:state.firm.branche,
+    groesse:state.firm.groesse,
+    gesamt:o.toFixed(1)+" "+ob.name,
+    nachricht:lines.join("\n")
+  };
+  try{
+    const r=await fetch("https://api.web3forms.com/submit",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify(payload)});
+    const j=await r.json().catch(()=>({}));
+    setMsg((r.ok&&j.success)
+      ? "Report angefordert — wir senden ihn an "+state.lead.mail+"."
+      : "Übermittlung hat nicht geklappt. Bitte später erneut versuchen oder direkt an hello@dani-knows-ai.com melden.");
+  }catch(e){
+    setMsg("Übermittlung hat nicht geklappt (Netzwerk). Bitte später erneut versuchen.");
+  }
 }
 
 function spiegelText(i){
